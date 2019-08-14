@@ -5,6 +5,7 @@
 		
 		include('sql-calls.php');
 		insert_event($event, $sesion_array);
+		header('location: index.php');
 	}
 ?>
 <!DOCTYPE html>
@@ -104,7 +105,7 @@ function checkForm(){
 	if(lista_sesiones.length > 0 && evento_text.length > 0){
 		var json_sesiones = JSON.stringify(lista_sesiones);
 		//alert(json_sesiones);
-		post('/sra/default/new-event.php', {evento: evento_text, sesion: json_sesiones});
+		post('nuevo.php', {evento: evento_text, sesion: json_sesiones});
 	}
 	else{
 		alert("Error debe ingresar un nombre de evento y al menos una sesión.");
