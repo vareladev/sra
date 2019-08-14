@@ -99,7 +99,7 @@ function validate() {
 	var regex_est = new RegExp("[0-9]{8}");
 	
 	if (regex_emp.test(input_text.toUpperCase()) || regex_est.test(input_text)) {
-		post('/sra/default/register.php', {carnet: input_text, sesion: selected_sesion, evento: input_event});
+		post('register.php', {carnet: input_text, sesion: selected_sesion, evento: input_event});
 	} else {
 		alert("Carnet con formato inválido");
 	}

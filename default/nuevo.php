@@ -75,8 +75,6 @@ function insertArrayIntoTable(){
 	sesion_index += 1;
   }
   html += "</tr></table>";
-  
-  alert(html);
 
   // ATTACH HTML TO CONTAINER
   document.getElementById("container").innerHTML = html;
