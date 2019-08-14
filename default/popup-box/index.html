@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Modal Popup Box</title>
+<link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+
+<button onclick="document.getElementById('modal-wrapper').style.display='block'" style="width:200px; margin-top:200px; margin-left:160px;">
+Open Popup</button>
+
+<div id="modal-wrapper" class="modal">
+  <form class="modal-content animate" action="/new-user.php" method="post">
+       
+    <div class="imgcontainer">
+      <span onclick="document.getElementById('modal-wrapper').style.display='none'" class="close" title="Close PopUp">&times;</span>
+      <h2 style="text-align:center">Agregar asistente</h2>
+	  <div style="margin: 20px;">El usuario con el carnet asdasd no ha sido encontrado, ¿Desea agregarlo a la base de datos y marcar su asistencia?</div>
+    </div>
+
+    <div class="container">
+      <input class="popup-input" type="text" placeholder="Carnet" name="popup-carnet" id="popup-carnet">
+      <input class="popup-input" type="password" placeholder="nombre" name="popup-nombre" id="popup-carnet">        
+      <button type="submit">Guardar asistente</button>
+    </div>
+    
+  </form>
+</div>
+
+<script>
+// If user clicks anywhere outside of the modal, Modal will close
+
+var modal = document.getElementById('modal-wrapper');
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>
