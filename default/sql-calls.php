@@ -271,18 +271,27 @@ function check_person_assistance($carnet, $id_evento, $id_sesion){
 	return $result;
 }
 
-function  redirect_post($evento,$sesion){
-	$url = 'register.php';
-	$myvars = 'evento=' . $evento . '&sesion=' . $sesion;
 
-	$ch = curl_init( $url );
-	curl_setopt( $ch, CURLOPT_POST, 1);
-	curl_setopt( $ch, CURLOPT_POSTFIELDS, $myvars);
-	curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
-	curl_setopt( $ch, CURLOPT_HEADER, 0);
-	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+/**
+ * this functions are useful in login.php
+ */
 
-	curl_exec( $ch );
+ /**
+ * Check if user exists
+ */
+ function check_login($nick, $pass){
+	$result = true;
+	include 'sql-open.php';
+	$stmt = $con->prepare("SELECT `id` FROM `admin` WHERE `nick` = ? AND `pass` = ?;");
+	$stmt->bind_param("ss", $nick, $pass);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows == 0){
+		$result = false;
+	}
+	$stmt->close();
+	include "sql-close.php";
+	return $result;
 }
 
 ?>

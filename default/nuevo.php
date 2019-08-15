@@ -1,4 +1,11 @@
 ﻿<?php
+	//check session
+	session_start();
+	if(!isset($_SESSION["nick"])){
+		header('location: index.php');
+	}
+	
+
 	if(isset($_POST["evento"]) && isset($_POST["sesion"])){
 		$event = $_POST["evento"];
 		$sesion_array =  json_decode($_POST["sesion"]);
@@ -170,6 +177,9 @@ function post(path, params, method='post') {
 										<br>
 										<div class="form-group form-primary">
 												<button type="submit" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20 myinput" onclick="checkForm();">Guardar evento</button>
+										</div>
+										<div class="form-group form-primary">
+												<button type="submit" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20 myinput" onclick="window.location.replace('index.php');">Ir a inicio</button>
 										</div>
 										<br>
                                     </div>

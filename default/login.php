@@ -1,15 +1,33 @@
 ﻿<?php
-	//check session
-	session_start();
-	if(isset($_SESSION["nick"])){
-		unset ($_SESSION["nick"]);
+	$nick = $pass = "";
+	$wronglogin = false;
+	if(isset($_POST["nick"]) && isset($_POST["pass"])){ 
+		$nick = $_POST["nick"];
+		$pass = md5($_POST["pass"]);
+		
+		include('sql-calls.php');
+		if(check_login($nick, $pass)){ //check login
+			session_start();
+			$_SESSION["nick"] = $nick;
+			header('location: nuevo.php') or die();
+		}
+		else{
+			$wronglogin = true;
+		}
 	}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 	<?php include('meta.php'); ?>
 
+	<link rel="stylesheet" type="text/css" href="table/vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="table/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="table/vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="table/vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="table/vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<link rel="stylesheet" type="text/css" href="table/css/main.css">
+	<!--===============================================================================================-->
     <!-- Required Fremwork -->
     <link rel="stylesheet" type="text/css" href="..\files\bower_components\bootstrap\css\bootstrap.min.css">
     <!-- themify-icons line icon -->
@@ -19,6 +37,14 @@
     <!-- Style.css -->
     <link rel="stylesheet" type="text/css" href="..\files\assets\css\style.css">
 	
+	<link rel="stylesheet" type="text/css" href="css/popup.css">
+<script>
+<?php
+	if($wronglogin){
+		echo "alert('Error: usuario y/o contraseña inválidos, verifique sus credenciales.');";
+	}
+?>
+</script>
 </head>
 
 <body class="fix-menu">
@@ -28,39 +54,31 @@
             <div class="row">
                 <div class="col-sm-12">
                     <!-- Authentication card start -->
-                            <div class="auth-box card">
-                                <div class="">
-									<div class="mycard">
-										<div class="row">
-											<div class="col-md-12">
-												<h3 class="text-center">Seleccione el evento:</h3>
-											</div>
-										</div>
-										<br>
-										<br>
-										<form action="register.php" method="post">
-											<div class="form-group form-primary">
-												<select id="evento" name="evento" class="form-control" style="height:50px; font-size: 20px;">
-													<?php
-														include('sql-calls.php');
-														get_events();
-													?>
-												<select>
-											</div>
-											
-											<div class="form-group form-primary">
-													<button type="submit" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20 myinput" onclick="validate()">Selecionar</button>
-											</div>
-											<div class="form-group form-primary" style="text-align:center;">
-													<a href="login.php" class="btn text-center m-b-12">Crear evento</a>
-											</div>
-										</form>
-										<br>
-                                    </div>
-                                </div>
-								
-                            </div>
-                        <!-- end of form -->
+					<div class="auth-box card">
+						<div class="">
+							<div class="mycard">
+								<div class="row">
+									<div class="col-md-12">
+										<h3 class="text-center">Sistema de registro de asistencia</h3>
+									</div>
+								</div>
+								<br>
+								<form action="login.php" method="post">
+									<div class="form-group form-primary">
+										<input type="text" id="nick" name="nick" class="form-control myinput" required placeholder="Usuario">
+									</div>
+									<div class="form-group form-primary">
+										<input type="password" id="pass" name="pass" class="form-control myinput" required placeholder="Contraseña">
+									</div>										
+									<div class="form-group form-primary">
+										<button type="submit" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20 myinput">Iniciar sesión</button>
+									</div>
+								</form>
+								<br>
+							</div>
+						</div>
+					</div>
+					<!-- end of form -->
                 </div>
                 <!-- end of col-sm-12 -->
             </div>
@@ -92,6 +110,14 @@
   gtag('js', new Date());
 
   gtag('config', 'UA-23581568-13');
+  
+  // If user clicks anywhere outside of the modal, Modal will close
+var modal = document.getElementById('modal-wrapper');
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
 </script>
 </body>
 
