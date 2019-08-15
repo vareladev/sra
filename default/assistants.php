@@ -3,16 +3,7 @@
 	if(!isset($_SESSION["nick"])){
 		header('location: login.php');
 	}
-	
-	
-	$new_event_ok;
-	if(isset($_POST["evento"]) && isset($_POST["sesion"])){
-		$event = $_POST["evento"];
-		$sesion_array =  json_decode($_POST["sesion"]);
-		
-		include('sql-calls.php');
-		$new_event_ok = insert_event($event, $sesion_array);
-	}
+	include('sql-calls.php');
 ?>
 <head>
 	<?php include 'meta.php';?>
@@ -38,109 +29,7 @@
     <!-- Style.css -->
     <link rel="stylesheet" type="text/css" href="..\files\assets\css\style.css">
     <link rel="stylesheet" type="text/css" href="..\files\assets\css\jquery.mCustomScrollbar.css">
-	
-<script>
-var lista_sesiones = [];
 
-function addSesionToEventList() {
-	if(checkSesionFormat()){
-		//obteniendo valor de la fecha
-		var sesion = document.getElementById("sesion").value;
-		//ingresando fecha a arreglo global:
-		//var date = new Date(sesion);
-		lista_sesiones.push(sesion.replace(/T/g, " ")+":00"); 
-		//agregando elementos a la tabla
-		insertArrayIntoTable();
-	}
-	else{
-		alert("Error: verifique que la fecha y hora ingresada para la sesión sea válida.");
-	}
-}
-
-function deleteElementById(index){
-	//eliminando elemento
-	lista_sesiones.splice(index, 1);
-	//agregando elementos a la tabla
-	insertArrayIntoTable();
-}
-
-function insertArrayIntoTable(){
-  var sesion_index = 0;
-  document.getElementById("container").innerHTML = "";
-  // DRAW THE HTML TABLE
-  var perrow = 1, // 3 items per row
-      html = "<table><tr>";
-
-  // Loop through array and add table cells
-  for (var i=0; i<lista_sesiones.length; i++) {
-    html += "<td>" + "<h5 class=\"text-center\">Sesión "+ (sesion_index+1) +": "+ lista_sesiones[i] + "</h5>" + "</td>";
-	html += "<td>" + "<a href=\"#\"><i onclick=\"deleteElementById("+ sesion_index +")\" class=\"feather icon-trash-2\"></i></a>" + "</td>";
-    // Break into next row
-    var next = i+1;
-    if (next%perrow==0 && next!=lista_sesiones.length) {
-      html += "</tr><tr>";
-    }
-	sesion_index += 1;
-  }
-  html += "</tr></table>";
-
-  // ATTACH HTML TO CONTAINER
-  document.getElementById("container").innerHTML = html;
-}
-
-function deleteAllTableRows(){
-	var myTable = document.getElementById("tablelist");
-	var rowCount = myTable.rows.length;
-	for (var x=rowCount-1; x>=0; x--) {
-	   myTable.deleteRow(x);
-	}
-}
-
-function checkSesionFormat(){
-	var sesion = document.getElementById("sesion").value;
-	if (sesion.length > 0) {
-		return true;
-	}
-	else{
-		return false;
-	}
-}
-
-function checkForm(){
-	var evento_text = document.getElementById("evento").value;
-	if(lista_sesiones.length > 0 && evento_text.length > 0){
-		var json_sesiones = JSON.stringify(lista_sesiones);
-		//alert(json_sesiones);
-		post('dashboard.php', {evento: evento_text, sesion: json_sesiones});
-	}
-	else{
-		alert("Error debe ingresar un nombre de evento y al menos una sesión.");
-	}
-}
-
-function post(path, params, method='post') {
-
-  // The rest of this code assumes you are not using a library.
-  // It can be made less wordy if you use one.
-  const form = document.createElement('form');
-  form.method = method;
-  form.action = path;
-
-  for (const key in params) {
-    if (params.hasOwnProperty(key)) {
-      const hiddenField = document.createElement('input');
-      hiddenField.type = 'hidden';
-      hiddenField.name = key;
-      hiddenField.value = params[key];
-
-      form.appendChild(hiddenField);
-    }
-  }
-
-  document.body.appendChild(form);
-  form.submit();
-}
-</script>
 </head>
 
 <body>
@@ -229,57 +118,63 @@ function post(path, params, method='post') {
 													<!-- Create event card start -->
 													<div class="">
 														<div class="mycard">
-															<?php
-																if(isset($new_event_ok)){
-																	if($new_event_ok){
-																		echo '
-																			<div class="alert alert-success icons-alert">
-																				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-																					<i class="icofont icofont-close-line-circled"></i>
-																				</button>
-																				<p>El evento ha sido registrado con éxito. Ahora puede registrar asistentes en el evento.</p>
-																			</div>																
-																		';	
-																	}
-																	else{
-																		echo '
-																			<div class="alert alert-danger icons-alert">
-																				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-																					<i class="icofont icofont-close-line-circled"></i>
-																				</button>
-																				<p>El evento ha sido registrado con éxito. Ahora puede registrar asistentes en el evento.</p>
-																			</div>																
-																		';	
-																	}
-																}
-																
-															?>
+															<!-- block select event start-->
 															<div class="row">
 																<div class="col-md-12">
-																	<h4 class="text-center">Crear nuevo evento</h3>
+																	<h5 class="">Seleccione el evento:</h5>
 																</div>
 															</div>
 															<br>
 															<div class="form-group form-primary">
-																<input type="text" id="evento" name="evento" class="form-control myinput" placeholder="Titulo del evento">
+																<div class="form-group form-primary">
+																	<select id="evento" name="evento" class="form-control" style="height:40px; font-size: 17px;">
+																		<?php
+																			get_events();
+																		?>
+																	<select>
+																</div>
 															</div>
+															<!-- block select event end-->
+															<!-- block select persons start-->
 															<div class="row">
 																<div class="col-md-12">
-																	<h4 class="text-center">Agregar sesiones</h3>
+																	<h5 class="">Seleccione quienes serán incluidos en la lista:</h5>
 																</div>
 															</div>
 															<br>
 															<div class="form-group form-primary">
-																<input type="datetime-local" id="sesion" name="sesion" class="form-control myinput">
+																<div class="myinputr">
+																  <input type="radio" id="includeonly" name="include" value="orderbyid">
+																  <label for="includeonly">Solo asistentes</label>
+																</div>
+																<div class="myinputr">
+																  <input type="radio" id="includedeptos" name="include" value="Ordernar lista por departamentos">
+																  <label for="includedeptos">Solo a los departamentos con asistentes</label>
+																</div>
+																<div class="myinputr">
+																  <input type="radio" id="includeall" name="include" value="Ordernar lista por departamentos">
+																  <label for="includeall">Todos los empleados</label>
+																</div>
 															</div>
-															<div class="form-group form-primary" style="text-align:center;">
-																<button class="btn btn-primary" onclick="addSesionToEventList();">Agregar sesión</button>
+															<!-- block select persons end-->
+															<!-- block select order start-->
+															<div class="row">
+																<div class="col-md-12">
+																	<h5 class="">Seleccione el criterio de orden de la lista:</h5>
+																</div>
 															</div>
-															<div id="container"></div>
 															<br>
-															<div class="form-group form-primary" style="text-align:center;">
-																	<button class="btn btn-success" onclick="checkForm();">Guardar evento</button>
+															<div class="form-group form-primary">
+																<div class="myinputr">
+																  <input type="radio" id="orderbyid" name="orderby" value="orderbyid">
+																  <label for="orderbyid">Ordenar lista según carnet</label>
+																</div>
+																<div class="myinputr">
+																  <input type="radio" id="orderbydepto" name="orderby" value="Ordernar lista por departamentos">
+																  <label for="orderbydepto">Ordernar lista por departamentos</label>
+																</div>
 															</div>
+															<!-- block select order end-->
 														</div>
 													</div>
 													<!-- Create event card end -->

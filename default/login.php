@@ -9,7 +9,7 @@
 		if(check_login($nick, $pass)){ //check login
 			session_start();
 			$_SESSION["nick"] = $nick;
-			header('location: nuevo.php') or die();
+			header('location: dashboard.php') or die();
 		}
 		else{
 			$wronglogin = true;

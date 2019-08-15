@@ -25236,3 +25236,10 @@ body.dark #styleSelector .form-control {
 	text-align: center;
 	font-size: 20px;
 }
+
+
+.myinputr{
+	margin-left: 35px;
+	height: 35px;
+	font-size: 17px;
+}

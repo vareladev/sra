@@ -9,7 +9,7 @@
 				</a>
 			</li>
 			<li class="">
-				<a href="export.php">
+				<a href="assistants.php">
 					<span class="pcoded-micon"><i class="feather icon-layers"></i></span>
 					<span class="pcoded-mtext">Ver asistentes de evento</span>
 				</a>
