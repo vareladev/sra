@@ -1,11 +1,4 @@
-﻿<?php
-	//check session
-	session_start();
-	if(isset($_SESSION["nick"])){
-		unset ($_SESSION["nick"]);
-	}
-?>
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<?php include('meta.php'); ?>

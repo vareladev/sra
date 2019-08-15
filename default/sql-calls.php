@@ -177,14 +177,21 @@ function check_emp($carnet){
  * sesions relationed to this event
  */
 function insert_event($event, $sesion_array){
+	$event_ok = false;
+	
 	include 'sql-open.php';
 	$stmt = $con->prepare("INSERT INTO `evento`(`nombre`) VALUES (?);");
 	$stmt->bind_param("s", $event);
-	$stmt->execute();
+		
+	if ($stmt->execute()) { 
+		$event_ok = true;
+	}
+	
 	$last_event_id = $stmt->insert_id; //getting last id
 	$stmt->close();
 	include "sql-close.php";
 	insert_sesion($sesion_array,$last_event_id);
+	return $event_ok;
 }
 
 /**
