@@ -16,6 +16,24 @@ function get_events(){
 	include "sql-close.php";	
 }
 
+function get_evento_date($id_evento){
+	$event_date = "";
+	include 'sql-open.php';
+	$stmt = $con->prepare("SELECT DATE(s.hora_ini) as fecha FROM evento e, sesion s WHERE e.id = s.id_evento AND e.id = ? ORDER BY s.hora_ini ASC LIMIT 1;");
+	$stmt->bind_param("i", $id_evento);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		while($row = $result->fetch_assoc()) {
+			$event_date = $row["fecha"];
+		}	
+	}	
+	$stmt->close();
+	include "sql-close.php";
+	return $event_date;	
+}
+
+
 /**
  * Function used in index.php, gets an event name from db.
  * @param {int} event id

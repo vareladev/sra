@@ -45,7 +45,7 @@
 													<button type="submit" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20 myinput" onclick="validate()">Selecionar</button>
 											</div>
 											<div class="form-group form-primary" style="text-align:center;">
-													<a href="login.php" class="btn text-center m-b-12">Crear evento</a>
+													<a href="login.php" class="btn btn-success">Iniciar sesión</a>
 											</div>
 										</form>
 										<br>

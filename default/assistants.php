@@ -29,7 +29,21 @@
     <!-- Style.css -->
     <link rel="stylesheet" type="text/css" href="..\files\assets\css\style.css">
     <link rel="stylesheet" type="text/css" href="..\files\assets\css\jquery.mCustomScrollbar.css">
+<script>
+window.onload = function () {
+    document.getElementById('facultades').disabled=true;
+}
 
+function enableSchoolList() { 
+    var radioValue = document.querySelector('input[name="include"]:checked').value;
+    if(radioValue=="4"){
+		document.getElementById("facultades").removeAttribute('disabled');
+    }
+    else{
+        document.getElementById("facultades").setAttribute('disabled', true);
+    }
+}
+</script>
 </head>
 
 <body>
@@ -118,6 +132,7 @@
 													<!-- Create event card start -->
 													<div class="">
 														<div class="mycard">
+															<form action="assistants-list.php" method="post">
 															<!-- block select event start-->
 															<div class="row">
 																<div class="col-md-12">
@@ -144,16 +159,28 @@
 															<br>
 															<div class="form-group form-primary">
 																<div class="myinputr">
-																  <input type="radio" id="includeonly" name="include" value="orderbyid">
+																  <input type="radio" id="includeonly" name="include" value="1" required onChange="enableSchoolList()">
 																  <label for="includeonly">Solo asistentes</label>
 																</div>
 																<div class="myinputr">
-																  <input type="radio" id="includedeptos" name="include" value="Ordernar lista por departamentos">
+																  <input type="radio" id="includedeptos" name="include" value="2" onChange="enableSchoolList()">
 																  <label for="includedeptos">Solo a los departamentos con asistentes</label>
 																</div>
 																<div class="myinputr">
-																  <input type="radio" id="includeall" name="include" value="Ordernar lista por departamentos">
+																  <input type="radio" id="includeall" name="include" value="3" onChange="enableSchoolList()">
 																  <label for="includeall">Todos los empleados</label>
+																</div>
+																<div class="myinputr">
+																  <input type="radio" id="includeFacul" name="include" value="4" onChange="enableSchoolList()">
+																  <label for="includeFacul">Por facultad:</label>
+																</div>
+																<div class="form-group form-primary myinputr">
+																	<select id="facultades" name="facultades" class="form-control" style="height:40px; font-size: 17px;">
+																		  <option value="0">Todas las facultades</option>
+																		  <option value="1">Ciencias sociales y humanidades</option>
+																		  <option value="2">Ciencias económicas y empresariales</option>
+																		  <option value="3">Ingeniería y arquítectura</option>
+																	</select>
 																</div>
 															</div>
 															<!-- block select persons end-->
@@ -166,15 +193,37 @@
 															<br>
 															<div class="form-group form-primary">
 																<div class="myinputr">
-																  <input type="radio" id="orderbyid" name="orderby" value="orderbyid">
+																  <input type="radio" id="orderbyid" name="orderby" value="1" required>
 																  <label for="orderbyid">Ordenar lista según carnet</label>
 																</div>
 																<div class="myinputr">
-																  <input type="radio" id="orderbydepto" name="orderby" value="Ordernar lista por departamentos">
+																  <input type="radio" id="orderbydepto" name="orderby" value="2">
 																  <label for="orderbydepto">Ordernar lista por departamentos</label>
 																</div>
 															</div>
 															<!-- block select order end-->
+															<!-- block select others start-->
+															<div class="row">
+																<div class="col-md-12">
+																	<h5 class="">Otros criterios:</h5>
+																</div>
+															</div>
+															<br>
+															<div class="form-group form-primary">
+																<div class="myinputr">
+																  <input type="checkbox" name="alumnos" value="alumnos">
+																  <label for="alumnos">Incluir alumos que asistieron al evento</label>
+																</div>
+																<div class="myinputr">
+																  <input type="checkbox" name="otros" value="otros">
+																  <label for="otros">Incluir personal no registrado en la BD</label>
+																</div>
+															</div>
+															<!-- block select others end-->
+															<div class="form-group form-primary" style="text-align:center;">
+																<input class="btn btn-primary" type="submit" value="Ver">
+															</div>
+															</form>
 														</div>
 													</div>
 													<!-- Create event card end -->
