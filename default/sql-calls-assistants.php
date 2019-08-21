@@ -1,4 +1,79 @@
 <?php
+function hide_event($id_evento){
+	include 'sql-open.php';
+	$stmt = $con->prepare("UPDATE `evento` SET `isvisible`= 0 WHERE `id` = ?;");
+	$stmt->bind_param("i", $id_evento);
+	$stmt->execute();
+	$stmt->close();
+	include "sql-close.php";
+}
+
+function is_event_held($id_evento){
+	$response = false;
+	include 'sql-open.php';
+	$stmt = $con->prepare("SELECT DATE(s.hora_ini) as dia FROM evento e, sesion s WHERE e.id = s.id_evento AND e.id = ? ORDER BY s.hora_ini ASC LIMIT 1;");
+	$stmt->bind_param("i", $id_evento);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		while($row = $result->fetch_assoc()) {
+			$event_date = strtotime($row["dia"]);
+			$today = strtotime(date('Y-m-d'));
+			if($event_date > $today){
+				$response = true;
+			}
+		}	
+	}	
+	$stmt->close();
+	include "sql-close.php";
+	return $response;
+}
+
+
+function get_event_detail(){
+	$correl = 1;
+	include 'sql-open.php';
+	$stmt = $con->prepare("SELECT e.id, e.nombre, COUNT(s.id) as sesiones FROM evento e, sesion s WHERE e.id = s.id_evento AND e.isvisible = 1 GROUP BY e.nombre ORDER BY e.id DESC;");
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		while($row = $result->fetch_assoc()) {
+			$array_date = get_event_datetime($row["id"]);
+			echo '
+				<tr>
+					<td>'.$correl.'</td>
+					<td>'.$row["nombre"].'</td>
+					<td><center>'.$array_date[0].'</center></td>
+					<td><center>'.$array_date[1].'</center></td>
+					<td><center>'.$row["sesiones"].'</center></td>
+					<td><center><a href="event-list.php?ide='.$row["id"].'"><i class="feather icon-trash-2"></a></center></td>
+				</tr>
+			';
+			$correl ++;
+		}	
+	}	
+	$stmt->close();
+	include "sql-close.php";
+}
+
+
+function get_event_datetime($id_evento){
+	$array_date = array();
+	include 'sql-open.php';
+	$stmt = $con->prepare("SELECT DATE(s.hora_ini) as dia, TIME(s.hora_ini) as hora FROM evento e, sesion s WHERE e.id = s.id_evento AND e.id = ? ORDER BY s.hora_ini ASC LIMIT 1;");
+	$stmt->bind_param("i", $id_evento);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		while($row = $result->fetch_assoc()) {
+			array_push($array_date, $row["dia"]);
+			array_push($array_date, $row["hora"]);
+		}	
+	}	
+	$stmt->close();
+	include "sql-close.php";
+	return $array_date;
+}
 
 function get_sesions_id($id_evento){
 	$array_sesiones = array();

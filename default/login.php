@@ -1,4 +1,9 @@
 ﻿<?php
+	session_start();
+	if(isset($_SESSION["nick"])){
+		header('location: dashboard.php');
+	}
+
 	$nick = $pass = "";
 	$wronglogin = false;
 	if(isset($_POST["nick"]) && isset($_POST["pass"])){ 

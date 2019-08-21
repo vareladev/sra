@@ -284,7 +284,7 @@ function openPopUp(){
 
   gtag('config', 'UA-23581568-13');
   
-  // If user clicks anywhere outside of the modal, Modal will close
+// If user clicks anywhere outside of the modal, Modal will close
 var modal = document.getElementById('modal-wrapper');
 window.onclick = function(event) {
     if (event.target == modal) {

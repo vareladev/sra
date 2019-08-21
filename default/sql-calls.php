@@ -4,7 +4,7 @@
  */
 function get_events(){
 	include 'sql-open.php';
-	$stmt = $con->prepare("SELECT `id`,`nombre` FROM `evento` ORDER BY `id` ASC LIMIT 5;");
+	$stmt = $con->prepare("SELECT `id`,`nombre` FROM `evento` WHERE `isvisible` = 1 ORDER BY `id` ASC LIMIT 5;");
 	$stmt->execute();
 	$result = $stmt->get_result();
 	if($result->num_rows > 0){
