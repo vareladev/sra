@@ -33,7 +33,7 @@ function is_event_held($id_evento){
 function get_event_detail(){
 	$correl = 1;
 	include 'sql-open.php';
-	$stmt = $con->prepare("SELECT e.id, e.nombre, COUNT(s.id) as sesiones FROM evento e, sesion s WHERE e.id = s.id_evento AND e.isvisible = 1 GROUP BY e.nombre ORDER BY e.id DESC;");
+	$stmt = $con->prepare("SELECT e.id, e.nombre, COUNT(s.id) as sesiones FROM evento e, sesion s WHERE e.id = s.id_evento AND e.isvisible = 1 GROUP BY e.id, e.nombre ORDER BY e.id DESC;");
 	$stmt->execute();
 	$result = $stmt->get_result();
 	if($result->num_rows > 0){
