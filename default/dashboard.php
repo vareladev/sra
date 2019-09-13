@@ -6,12 +6,13 @@
 	
 	
 	$new_event_ok;
-	if(isset($_POST["evento"]) && isset($_POST["sesion"])){
+	if(isset($_POST["evento"]) && isset($_POST["sesion"]) && isset($_POST["snames"])){
 		$event = $_POST["evento"];
 		$sesion_array =  json_decode($_POST["sesion"]);
+		$sname_array =  json_decode($_POST["snames"]);
 		
 		include('sql-calls.php');
-		$new_event_ok = insert_event($event, $sesion_array);
+		$new_event_ok = insert_event($event, $sesion_array,$sname_array);
 	}
 ?>
 <head>
@@ -39,33 +40,37 @@
     <link rel="stylesheet" type="text/css" href="..\files\assets\css\style.css">
     <link rel="stylesheet" type="text/css" href="..\files\assets\css\jquery.mCustomScrollbar.css">
 	
+	<link rel="stylesheet" type="text/css" href="css/my.css">	
+	
 <script>
 var lista_sesiones = [];
+var lista_sname = [];
 
 function addSesionToEventList() {
 	if(checkSesionFormat()){
-		//obteniendo valor de la fecha
+		var sname = document.getElementById("sname").value;
 		var sesion = document.getElementById("sesion").value;
 		//ingresando fecha a arreglo global:
-		//var date = new Date(sesion);
 		lista_sesiones.push(sesion.replace(/T/g, " ")+":00"); 
+		lista_sname.push(sname);
 		//agregando elementos a la tabla
 		insertArrayIntoTable();
 	}
 	else{
-		alert("Error: verifique que la fecha y hora ingresada para la sesión sea válida.");
+		alert("Error: verifique que el nombre, la fecha y hora ingresada para la sesión sea válida.");
 	}
 }
 
 function deleteElementById(index){
 	//eliminando elemento
 	lista_sesiones.splice(index, 1);
+	lista_sname.splice(index, 1);
 	//agregando elementos a la tabla
 	insertArrayIntoTable();
 }
 
 function insertArrayIntoTable(){
-  var sesion_index = 0;
+  var sesion_index = 1;
   document.getElementById("container").innerHTML = "";
   // DRAW THE HTML TABLE
   var perrow = 1, // 3 items per row
@@ -73,7 +78,7 @@ function insertArrayIntoTable(){
 
   // Loop through array and add table cells
   for (var i=0; i<lista_sesiones.length; i++) {
-    html += "<td>" + "<h5 class=\"text-center\">Sesión "+ (sesion_index+1) +": "+ lista_sesiones[i] + "</h5>" + "</td>";
+    html += "<td>" + "<h5 class=\"text-center\">"+ sesion_index + ": " + lista_sname[i] +" - "+ lista_sesiones[i] + "</h5>" + "</td>";
 	html += "<td>" + "<a href=\"#\"><i onclick=\"deleteElementById("+ sesion_index +")\" class=\"feather icon-trash-2\"></i></a>" + "</td>";
     // Break into next row
     var next = i+1;
@@ -97,8 +102,10 @@ function deleteAllTableRows(){
 }
 
 function checkSesionFormat(){
+	var sname = document.getElementById("sname").value;
 	var sesion = document.getElementById("sesion").value;
-	if (sesion.length > 0) {
+	
+	if (sesion.length > 0 && sname.length > 0) {
 		return true;
 	}
 	else{
@@ -108,10 +115,12 @@ function checkSesionFormat(){
 
 function checkForm(){
 	var evento_text = document.getElementById("evento").value;
-	if(lista_sesiones.length > 0 && evento_text.length > 0){
+	
+	if(lista_sesiones.length > 0 && evento_text.length){
 		var json_sesiones = JSON.stringify(lista_sesiones);
+		var json_snames = JSON.stringify(lista_sname);
 		//alert(json_sesiones);
-		post('dashboard.php', {evento: evento_text, sesion: json_sesiones});
+		post('dashboard.php', {evento: evento_text, sesion: json_sesiones, snames: json_snames});
 	}
 	else{
 		alert("Error debe ingresar un nombre de evento y al menos una sesión.");
@@ -228,7 +237,7 @@ function post(path, params, method='post') {
 												
 													<!-- Create event card start -->
 													<div class="">
-														<div class="mycard">
+														<div class="mycard-admin">
 															<?php
 																if(isset($new_event_ok)){
 																	if($new_event_ok){
@@ -269,12 +278,35 @@ function post(path, params, method='post') {
 																</div>
 															</div>
 															<br>
-															<div class="form-group form-primary">
-																<input type="datetime-local" id="sesion" name="sesion" class="form-control myinput">
+															<div class="row">
+																<div class="col-md-12" >
+																	<h5 class="text-center" style="padding-bottom: 10px;">Nombre de la sesión:</h5>
+																</div>
 															</div>
-															<div class="form-group form-primary" style="text-align:center;">
-																<button class="btn btn-primary" onclick="addSesionToEventList();">Agregar sesión</button>
+															<div class="row">
+																<div class="col-md-12">
+																	<div class="form-group form-primary">
+																		<input type="text" id="sname" name="sname" class="form-control myinput">
+																	</div>
+																</div>
 															</div>
+															<div class="row">
+																<div class="col-md-12">
+																	<h5 class="text-center" style="padding-bottom: 10px;">Fecha y hora:</h5>
+																</div>
+															</div>	
+															<div class="row">
+																<div class="col-md-9">
+																	<div class="form-group form-primary">
+																		<input type="datetime-local" id="sesion" name="sesion" class="form-control myinput">
+																	</div>
+																</div>
+																<div class="col-md-3" >
+																	<button class="btn btn-primary mybutton" onclick="addSesionToEventList();">Agregar</button>
+																</div>
+															</div>															
+															
+															
 															<div id="container"></div>
 															<br>
 															<div class="form-group form-primary" style="text-align:center;">

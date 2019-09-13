@@ -25231,12 +25231,23 @@ body.dark #styleSelector .form-control {
 	padding-top: 50px;
 }
 
+.mycard-admin{
+	margin: 0 auto;
+	width:30%;
+	padding-top: 50px;
+}
+
 .myinput{
-	height: 50px;
+	height: 40px;
 	text-align: center;
 	font-size: 20px;
 }
 
+.mybutton{
+	height: 40px;
+	text-align: center;
+	font-size: 15px;
+}
 
 .myinputr{
 	margin-left: 35px;

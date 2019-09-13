@@ -63,16 +63,16 @@ function get_event_name($id_evento){
 function get_sesions($id_evento, $id_sesion){
 	$cont = 1;
 	include 'sql-open.php';
-	$stmt = $con->prepare("SELECT `id`,TIME(`hora_ini`) AS hora_ini, TIME(`hora_fin`) AS hora_fin FROM `sesion` WHERE `id_evento` = ? ORDER BY `id` ASC;");
+	$stmt = $con->prepare("SELECT `id`,`nombre`,TIME(`hora_ini`) AS hora_ini, TIME(`hora_fin`) AS hora_fin FROM `sesion` WHERE `id_evento` = ? ORDER BY `id` ASC;");
 	$stmt->bind_param("i", $id_evento);
 	$stmt->execute();
 	$result = $stmt->get_result();
 	if($result->num_rows > 0){
 		while($row = $result->fetch_assoc()) {
 			if ($id_sesion == $row["id"])
-				echo '<option value="'.$row["id"].'" selected>Sesión '.$cont.': '.substr_replace($row["hora_ini"] ,"", -3).'</option> ';
+				echo '<option value="'.$row["id"].'" selected>'.$row["nombre"].': '.substr_replace($row["hora_ini"] ,"", -3).'</option> ';
 			else
-				echo '<option value="'.$row["id"].'">Sesión '.$cont.': '.substr_replace($row["hora_ini"] ,"", -3).'</option> ';
+				echo '<option value="'.$row["id"].'">'.$row["nombre"].': '.substr_replace($row["hora_ini"] ,"", -3).'</option> ';
 			$cont +=1;
 		}	
 	}	
@@ -194,7 +194,7 @@ function check_emp($carnet){
  * Function used in new-event.php, insert a new event register into db, including all 
  * sesions relationed to this event
  */
-function insert_event($event, $sesion_array){
+function insert_event($event, $sesion_array, $sname_array){
 	$event_ok = false;
 	
 	include 'sql-open.php';
@@ -208,7 +208,7 @@ function insert_event($event, $sesion_array){
 	$last_event_id = $stmt->insert_id; //getting last id
 	$stmt->close();
 	include "sql-close.php";
-	insert_sesion($sesion_array,$last_event_id);
+	insert_sesion($sesion_array,$sname_array,$last_event_id);
 	return $event_ok;
 }
 
@@ -216,12 +216,13 @@ function insert_event($event, $sesion_array){
  * Function used in new-event.php, insert a new event register into db, including all 
  * sesions relationed to this event
  */
-function insert_sesion($sesion_array,$last_event_id){
+function insert_sesion($sesion_array,$sname_array,$last_event_id){
 	include 'sql-open.php';
 	for ($i = 0; $i < sizeof($sesion_array) ; $i++){
 		$fecha = $sesion_array[$i];
-		$stmt = $con->prepare("INSERT INTO `sesion`(`hora_ini`,`id_evento`) VALUES (?,?);");
-		$stmt->bind_param("si",$fecha,$last_event_id);
+		$sname = $sname_array[$i];
+		$stmt = $con->prepare("INSERT INTO `sesion`(`nombre`,`hora_ini`,`id_evento`) VALUES (?,?,?);");
+		$stmt->bind_param("ssi",$sname,$fecha,$last_event_id);
 		$stmt->execute();
 	}
 	$stmt->close();
